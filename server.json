@@ -3,7 +3,7 @@
   "name": "com.getmcpads/google-analytics",
   "title": "Google Analytics 4",
   "description": "Google Analytics 4: 27 read-only tools across the Data API and the Admin API.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "websiteUrl": "https://www.getmcpads.com/tools/ga4",
   "repository": {
     "url": "https://github.com/getmcpads-com/google-analytics-mcp-server",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@getmcpads/google-analytics-mcp-server",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "transport": {
         "type": "stdio"
       },
