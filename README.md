@@ -15,6 +15,8 @@ machine.
 npx -y @getmcpads/google-analytics-mcp-server
 ```
 
+Also listed in the [MCP Registry](https://registry.modelcontextprotocol.io) as **`com.getmcpads/google-analytics`**, so clients that read the registry can install it by name.
+
 > **Prefer not to run it yourself?** [getmcpads.com](https://www.getmcpads.com) is the hosted
 > version of this server, with Google Analytics alongside Meta Ads, Google Ads, TikTok Ads,
 > Pinterest Ads and Search Console behind a single endpoint, hosted OAuth, and cross-platform

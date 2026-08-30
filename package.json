@@ -1,13 +1,21 @@
 {
   "name": "@getmcpads/google-analytics-mcp-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "mcpName": "com.getmcpads/google-analytics",
   "description": "Open-source MCP server for Google Analytics 4. 27 read-only tools across the Data API and Admin API, with personal identifiers redacted before they reach the model. Self-hosted, bring your own credentials.",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "bin": { "google-analytics-mcp": "dist/cli.js" },
-  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "bin": {
+    "google-analytics-mcp": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsx watch src/cli.ts",
@@ -32,16 +40,40 @@
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.0.0"
   },
-  "engines": { "node": ">=18.0.0" },
-  "files": ["dist/", "LICENSE", "NOTICE", "README.md"],
-  "keywords": [
-    "mcp", "mcp-server", "model-context-protocol", "google-analytics",
-    "ga4", "google-analytics-4", "analytics", "data-api", "admin-api",
-    "claude", "chatgpt", "cursor", "ai-agent"
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist/",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
   ],
-  "repository": { "type": "git", "url": "git+https://github.com/getmcpads-com/google-analytics-mcp-server.git" },
-  "homepage": "https://github.com/getmcpads-com/google-analytics-mcp-server#readme",
-  "bugs": { "url": "https://github.com/getmcpads-com/google-analytics-mcp-server/issues" },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "google-analytics",
+    "ga4",
+    "google-analytics-4",
+    "analytics",
+    "data-api",
+    "admin-api",
+    "claude",
+    "chatgpt",
+    "cursor",
+    "ai-agent"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getmcpads-com/google-analytics-mcp-server.git"
+  },
+  "homepage": "https://www.getmcpads.com/tools/ga4",
+  "bugs": {
+    "url": "https://github.com/getmcpads-com/google-analytics-mcp-server/issues"
+  },
   "author": "GetMCPAds (https://www.getmcpads.com)",
-  "publishConfig": { "access": "public" }
+  "publishConfig": {
+    "access": "public"
+  }
 }

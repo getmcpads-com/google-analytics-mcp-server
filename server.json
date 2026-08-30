@@ -1,0 +1,49 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.getmcpads/google-analytics",
+  "title": "Google Analytics 4",
+  "description": "Google Analytics 4: 27 read-only tools across the Data API and the Admin API.",
+  "version": "1.0.1",
+  "websiteUrl": "https://www.getmcpads.com/tools/ga4",
+  "repository": {
+    "url": "https://github.com/getmcpads-com/google-analytics-mcp-server",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@getmcpads/google-analytics-mcp-server",
+      "version": "1.0.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "GA4_CLIENT_ID",
+          "description": "OAuth client ID.",
+          "isRequired": true,
+          "isSecret": false
+        },
+        {
+          "name": "GA4_CLIENT_SECRET",
+          "description": "OAuth client secret.",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "GA4_REFRESH_TOKEN",
+          "description": "OAuth refresh token, analytics.readonly scope.",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "GA4_PROPERTY_ID",
+          "description": "Default GA4 property ID.",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}
