@@ -53,18 +53,18 @@ what is left.
 The Google Analytics team ships an official MCP server, and it is good. It is Apache-2.0,
 runs locally, is read-only, and has a large community. Be clear about what differs.
 
-| | Google's official server | This server | [getmcpads.com](https://www.getmcpads.com) |
+| | **This server** | Google's official server | [getmcpads.com](https://www.getmcpads.com) |
 |---|---|---|---|
-| Tools | **7** | **27** | 27, plus 5 other platforms |
-| Hosting | Local, via pipx | **Local**, via npx | Hosted for you |
-| Read-only | ✅ | ✅ | ✅ |
-| Reports | `run_report`, `run_funnel_report`, realtime | Same, plus **pivots, batch reports, advanced funnels** | Same |
-| Admin API | Account summaries, property details, custom definitions | **Broader**: data streams, key events, channel groups, audiences, audience exports | Same |
-| Diagnostics | ❌ | **Ecommerce, BigQuery export, server-side tagging, quotas** | Same |
-| Metric compatibility | None | **Catalogue and matrix, checkable before the call** | Same |
-| Identifier redaction | ❌ | **Default on, opt-in to disable** | Same |
-| Language | Python | TypeScript | |
-| Status | Labelled experimental by Google | 1.0 | |
+| Tools | **27** | 7 | 27, plus 5 other platforms |
+| Hosting | **Local**, via npx | Local, via pipx | Hosted for you |
+| Read-only | **Yes** | Yes | Yes |
+| Reports | Their three, plus **pivots, batch reports, advanced funnels** | `run_report`, `run_funnel_report`, realtime | Same |
+| Admin API | **Broader**: data streams, key events, channel groups, audiences, audience exports | Account summaries, property details, custom definitions | Same |
+| Diagnostics | **Ecommerce, BigQuery export, server-side tagging, quotas** | None | Same |
+| Metric compatibility | **Catalogue and matrix, checkable before the call** | None | Same |
+| Identifier redaction | **Default on, opt-in to disable** | None | Same |
+| Language | TypeScript | Python | |
+| Status | 1.0 | Labelled experimental by Google | |
 
 **Neither is more private than the other.** Both run locally and read only. If the seven
 official tools cover what you need, and your model writes clean GA4 report requests, use
