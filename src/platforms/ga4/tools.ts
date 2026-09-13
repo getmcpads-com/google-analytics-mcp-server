@@ -724,6 +724,7 @@ Use ga4://metrics and ga4://dimensions resources for available fields. Max 9 dim
           data,
           rowCount: data.length,
           totalRowCount: response.rowCount,
+          metadata: response.metadata,
           debug: {
             requestCount: 1,
             executionTimeMs: Date.now() - startTime,

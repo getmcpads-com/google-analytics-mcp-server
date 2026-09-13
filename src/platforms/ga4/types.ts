@@ -265,7 +265,7 @@ export interface GA4RunReportResponse {
   metricHeaders?: Array<{ name: string; type: string }>;
   rows?: GA4Row[];
   rowCount?: number;
-  metadata?: { currencyCode: string; timeZone: string };
+  metadata?: { currencyCode?: string; timeZone?: string; subjectToThresholding?: boolean; dataLossFromOtherRow?: boolean; samplingMetadatas?: unknown[] };
   totals?: GA4Row[];
   minimums?: GA4Row[];
   maximums?: GA4Row[];

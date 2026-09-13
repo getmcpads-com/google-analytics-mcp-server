@@ -1,0 +1,2860 @@
+{
+  "serverInfo": {
+    "name": "@getmcpads/google-analytics-mcp-server",
+    "title": "Google Analytics 4 MCP server: 27 read tools.",
+    "version": "1.1.0",
+    "websiteUrl": "https://www.getmcpads.com/tools/ga4",
+    "icons": [
+      {
+        "src": "https://mcp.getmcpads.com/icon.svg",
+        "mimeType": "image/svg+xml"
+      }
+    ]
+  },
+  "tools": [
+    {
+      "name": "ga4_health_check",
+      "title": "ga4 health check",
+      "description": "Read-only GA4 health check. Verifies configured credentials, accessible properties, and metadata/property access without exposing OAuth tokens.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "Optional property ID to check metadata and property details for"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_list_properties",
+      "title": "ga4 list properties",
+      "description": "List all GA4 properties accessible with the current credentials. Returns property ID, display name, timezone, and currency.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_run_report",
+      "title": "ga4 run report",
+      "description": "Run a GA4 analytics report with intelligent query planning. Supports 52 metrics, 63 dimensions, auto-pagination.\nUse ga4://metrics and ga4://dimensions resources for available fields. Max 9 dimensions + 10 metrics per request.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Metric keys (e.g., sessions, activeUsers, totalRevenue)"
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Dimension keys (e.g., date, sessionSource, country)"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+          },
+          "datePreset": {
+            "type": "string",
+            "enum": [
+              "today",
+              "yesterday",
+              "last7days",
+              "last28days",
+              "last30days",
+              "last90days",
+              "last12months",
+              "thisMonth",
+              "lastMonth",
+              "thisYear"
+            ],
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+          },
+          "orderBy": {
+            "type": "string",
+            "description": "Metric or dimension key to sort by"
+          },
+          "orderDirection": {
+            "type": "string",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "default": "DESC",
+            "description": "Sort direction for the selected ordering field."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 250000,
+            "default": 1000,
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Optional 0-based row offset for explicit pagination."
+          },
+          "autoPaginate": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, omit the limit so the GA4 client paginates through all rows using offset."
+          }
+        },
+        "required": [
+          "propertyId",
+          "metrics"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_run_realtime_report",
+      "title": "ga4 run realtime report",
+      "description": "Run a read-only GA4 Data API realtime report. Realtime supports only a limited subset of dimensions and metrics.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 10,
+            "default": [
+              "activeUsers"
+            ],
+            "description": "Realtime metric API names, e.g. activeUsers, eventCount"
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 9,
+            "description": "Realtime dimension API names, e.g. eventName, city, deviceCategory"
+          },
+          "dimensionFilter": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Native realtime-compatible GA4 FilterExpression JSON."
+          },
+          "metricFilter": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Native realtime-compatible GA4 FilterExpression JSON."
+          },
+          "minuteRanges": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "startMinutesAgo": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "endMinutesAgo": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                }
+              },
+              "additionalProperties": false
+            },
+            "maxItems": 2,
+            "description": "Optional named realtime minute ranges; zero is the current minute."
+          },
+          "orderBys": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {}
+            },
+            "maxItems": 10,
+            "description": "Native GA4 OrderBy JSON."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 100,
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+          },
+          "keepEmptyRows": {
+            "type": "boolean",
+            "default": false,
+            "description": "Keep provider rows whose selected metrics are all zero, where supported."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_metadata",
+      "title": "ga4 get metadata",
+      "description": "Get the complete list of dimensions and metrics available for a specific GA4 property. Useful for discovering custom dimensions/metrics.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_custom_definitions",
+      "title": "ga4 get custom definitions",
+      "description": "List custom dimensions and custom metrics exposed by GA4 Data API metadata. Read-only fallback for custom definition inventory.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_key_events",
+      "title": "ga4 get key events",
+      "description": "Inventory GA4 key events/conversions using metadata-aware Data API reports. Returns best-effort event names and counts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+          },
+          "datePreset": {
+            "type": "string",
+            "enum": [
+              "today",
+              "yesterday",
+              "last7days",
+              "last28days",
+              "last30days",
+              "last90days",
+              "last12months",
+              "thisMonth",
+              "lastMonth",
+              "thisYear"
+            ],
+            "default": "last28days",
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_ecommerce_diagnostics",
+      "title": "ga4 get ecommerce diagnostics",
+      "description": "Read-only ecommerce coverage diagnostics for core ecommerce events, revenue metrics, and item-level reporting over a date range.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+          },
+          "datePreset": {
+            "type": "string",
+            "enum": [
+              "today",
+              "yesterday",
+              "last7days",
+              "last28days",
+              "last30days",
+              "last90days",
+              "last12months",
+              "thisMonth",
+              "lastMonth",
+              "thisYear"
+            ],
+            "default": "last28days",
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_event_parameters",
+      "title": "ga4 get event parameters",
+      "description": "Best-effort event parameter inventory from GA4 metadata plus event reports. Documents Data API limitations for raw parameters.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "eventNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional event names to sample, e.g. purchase, add_to_cart"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+          },
+          "datePreset": {
+            "type": "string",
+            "enum": [
+              "today",
+              "yesterday",
+              "last7days",
+              "last28days",
+              "last30days",
+              "last90days",
+              "last12months",
+              "thisMonth",
+              "lastMonth",
+              "thisYear"
+            ],
+            "default": "last28days",
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 50,
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_run_funnel_recipe",
+      "title": "ga4 run funnel recipe",
+      "description": "Run a read-only configurable funnel recipe using one GA4 report per eventName/pagePath step and return simple step counts.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Optional display name for this funnel step"
+                },
+                "eventName": {
+                  "type": "string",
+                  "description": "GA4 eventName to count for this step"
+                },
+                "pagePath": {
+                  "type": "string",
+                  "description": "GA4 pagePath to count for this step"
+                },
+                "matchType": {
+                  "type": "string",
+                  "enum": [
+                    "EXACT",
+                    "BEGINS_WITH",
+                    "ENDS_WITH",
+                    "CONTAINS",
+                    "FULL_REGEXP",
+                    "PARTIAL_REGEXP"
+                  ],
+                  "default": "EXACT",
+                  "description": "String match type for pagePath. eventName always uses EXACT."
+                }
+              },
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 10,
+            "description": "Ordered funnel steps. Each step needs eventName or pagePath."
+          },
+          "metric": {
+            "type": "string",
+            "enum": [
+              "activeUsers",
+              "totalUsers",
+              "sessions",
+              "eventCount",
+              "screenPageViews"
+            ],
+            "default": "activeUsers",
+            "description": "Metric used for the analysis; use a name from the platform metric catalogue."
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+          },
+          "datePreset": {
+            "type": "string",
+            "enum": [
+              "today",
+              "yesterday",
+              "last7days",
+              "last28days",
+              "last30days",
+              "last90days",
+              "last12months",
+              "thisMonth",
+              "lastMonth",
+              "thisYear"
+            ],
+            "default": "last28days",
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+          }
+        },
+        "required": [
+          "propertyId",
+          "steps"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_audience_export_diagnostics",
+      "title": "ga4 get audience export diagnostics",
+      "description": "Read-only Audience Export diagnostics. Lists existing audience exports, state counts, and optionally samples rows from an existing export.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "audienceExportName": {
+            "type": "string",
+            "description": "Optional resource name, e.g. properties/123456789/audienceExports/abc123"
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 100,
+            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results."
+          },
+          "includeRowSample": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, query a small row sample from audienceExportName. Can include user-level export dimensions."
+          },
+          "sampleLimit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5,
+            "description": "Maximum records included in the diagnostic sample."
+          },
+          "includePersonalIdentifiers": {
+            "type": "boolean",
+            "default": false,
+            "description": "Explicitly include user/device identifiers in the optional sample. False redacts them by default."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_audience_diagnostics",
+      "title": "ga4 get audience diagnostics",
+      "description": "Read-only audience diagnostics from Admin API audiences, Data API recurring audience lists, and observed audienceName report fallback.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "recurringAudienceListName": {
+            "type": "string",
+            "description": "Optional resource name, e.g. properties/123456789/recurringAudienceLists/abc123"
+          },
+          "includeDefinitions": {
+            "type": "boolean",
+            "default": false,
+            "description": "Include full Admin API audience definitions when available"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+          },
+          "datePreset": {
+            "type": "string",
+            "enum": [
+              "today",
+              "yesterday",
+              "last7days",
+              "last28days",
+              "last30days",
+              "last90days",
+              "last12months",
+              "thisMonth",
+              "lastMonth",
+              "thisYear"
+            ],
+            "default": "last28days",
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100,
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_bigquery_export_diagnostics",
+      "title": "ga4 get bigquery export diagnostics",
+      "description": "Detect GA4 BigQuery export links and diagnose export modes, stream coverage, excluded events, and dataset location.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "includeDataStreams": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include data stream summaries to compare against BigQuery exportStreams"
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_server_side_tagging_diagnostics",
+      "title": "ga4 get server side tagging diagnostics",
+      "description": "Best-effort read-only server-side tagging diagnostics from data streams, Measurement Protocol secrets, event rules, and stream settings.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "includeSettings": {
+            "type": "boolean",
+            "default": true,
+            "description": "Fetch enhanced measurement and data redaction settings for web streams"
+          },
+          "includeRules": {
+            "type": "boolean",
+            "default": true,
+            "description": "Fetch event create/edit rules for web streams"
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_run_advanced_funnel_report",
+      "title": "ga4 run advanced funnel report",
+      "description": "Run the GA4 Data API v1alpha runFunnelReport endpoint with optional breakdown/next-action, falling back to read-only step counts if unavailable.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Optional display name for this funnel step"
+                },
+                "eventName": {
+                  "type": "string",
+                  "description": "GA4 event name matched by a FunnelEventFilter"
+                },
+                "pagePath": {
+                  "type": "string",
+                  "description": "Shortcut for fieldName=pagePath string filter"
+                },
+                "fieldName": {
+                  "type": "string",
+                  "description": "Optional GA4 field name for a FunnelFieldFilter, e.g. pagePath, pageTitle, deviceCategory"
+                },
+                "fieldValue": {
+                  "type": "string",
+                  "description": "String value to match for fieldName"
+                },
+                "matchType": {
+                  "type": "string",
+                  "enum": [
+                    "EXACT",
+                    "BEGINS_WITH",
+                    "ENDS_WITH",
+                    "CONTAINS",
+                    "FULL_REGEXP",
+                    "PARTIAL_REGEXP"
+                  ],
+                  "default": "EXACT",
+                  "description": "String match type for pagePath or fieldName"
+                },
+                "isDirectlyFollowedBy": {
+                  "type": "boolean",
+                  "description": "Require this step to directly follow the previous step"
+                },
+                "withinSecondsFromPriorStep": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2592000,
+                  "description": "Maximum seconds from the prior step"
+                }
+              },
+              "additionalProperties": false
+            },
+            "minItems": 2,
+            "maxItems": 10,
+            "description": "Ordered funnel steps using eventName, pagePath, or fieldName+fieldValue"
+          },
+          "isOpenFunnel": {
+            "type": "boolean",
+            "default": false,
+            "description": "Allow users to enter at any funnel step instead of requiring the first step."
+          },
+          "visualizationType": {
+            "type": "string",
+            "enum": [
+              "STANDARD_FUNNEL",
+              "TRENDED_FUNNEL"
+            ],
+            "default": "STANDARD_FUNNEL",
+            "description": "Supported funnel visualization mode."
+          },
+          "breakdownDimension": {
+            "type": "string",
+            "description": "Optional breakdown dimension, e.g. deviceCategory or sessionDefaultChannelGroup"
+          },
+          "breakdownLimit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Maximum breakdown values to include in the funnel response."
+          },
+          "nextActionDimension": {
+            "type": "string",
+            "description": "Optional next action dimension, commonly eventName"
+          },
+          "nextActionLimit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10,
+            "description": "Maximum next actions returned for each funnel step."
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date YYYY-MM-DD or relative (7daysAgo, yesterday)"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date YYYY-MM-DD or relative (today, yesterday)"
+          },
+          "datePreset": {
+            "type": "string",
+            "enum": [
+              "today",
+              "yesterday",
+              "last7days",
+              "last28days",
+              "last30days",
+              "last90days",
+              "last12months",
+              "thisMonth",
+              "lastMonth",
+              "thisYear"
+            ],
+            "default": "last28days",
+            "description": "Named reporting period. Use the custom date range when you need exact start and end dates."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 250000,
+            "default": 10000,
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+          },
+          "fallbackToStepCounts": {
+            "type": "boolean",
+            "default": true,
+            "description": "If the advanced funnel is unavailable, return independent step counts with the limitation made explicit."
+          }
+        },
+        "required": [
+          "propertyId",
+          "steps"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_channel_groups",
+      "title": "ga4 get channel groups",
+      "description": "List custom channel groups defined for a GA4 property.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "GA4 property ID (numeric, e.g., 123456789)"
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_validate_query",
+      "title": "ga4 validate query",
+      "description": "Validate a metric/dimension combination BEFORE executing. Checks max limits (9 dims, 10 metrics), ecommerce rules, and dimension compatibility.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "Metric keys to validate"
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Dimension keys to validate"
+          }
+        },
+        "required": [
+          "metrics"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_run_pivot_report",
+      "title": "ga4 run pivot report",
+      "description": "Run a read-only GA4 Data API pivot report with native filters, ordering, quota state, multiple date ranges, and up to 250,000 pivot cells. Every pivot requires an explicit limit.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Numeric GA4 property ID or properties/{id}."
+          },
+          "report": {
+            "type": "object",
+            "properties": {
+              "dateRanges": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "startDate": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "YYYY-MM-DD or a GA4 relative date such as 28daysAgo."
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "minLength": 1,
+                      "description": "YYYY-MM-DD or a GA4 relative date such as today."
+                    }
+                  },
+                  "required": [
+                    "startDate",
+                    "endDate"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1,
+                "maxItems": 4
+              },
+              "dimensions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1,
+                "maxItems": 9
+              },
+              "metrics": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 1,
+                "maxItems": 10
+              },
+              "pivots": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "fieldNames": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "minItems": 1,
+                      "maxItems": 9
+                    },
+                    "orderBys": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "description": "Native GA4 OrderBy JSON."
+                      },
+                      "maxItems": 10
+                    },
+                    "offset": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 250000
+                    },
+                    "metricAggregations": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "TOTAL",
+                          "MINIMUM",
+                          "MAXIMUM",
+                          "COUNT"
+                        ]
+                      },
+                      "maxItems": 4
+                    }
+                  },
+                  "required": [
+                    "fieldNames",
+                    "limit"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1,
+                "maxItems": 9
+              },
+              "dimensionFilter": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "Native GA4 FilterExpression JSON."
+              },
+              "metricFilter": {
+                "$ref": "#/properties/report/properties/dimensionFilter",
+                "description": "Native GA4 FilterExpression JSON."
+              },
+              "currencyCode": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 3
+              },
+              "keepEmptyRows": {
+                "type": "boolean"
+              },
+              "returnPropertyQuota": {
+                "type": "boolean",
+                "default": true
+              },
+              "cohortSpec": {
+                "type": "object",
+                "additionalProperties": {},
+                "description": "Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."
+              },
+              "comparisons": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "maxItems": 4,
+                "description": "Native GA4 Comparison objects."
+              }
+            },
+            "required": [
+              "dimensions",
+              "metrics",
+              "pivots"
+            ],
+            "additionalProperties": false,
+            "description": "Native GA4 report request object for this endpoint."
+          }
+        },
+        "required": [
+          "propertyId",
+          "report"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_batch_run_reports",
+      "title": "ga4 batch run reports",
+      "description": "Run 1-5 independent read-only GA4 Core reports for the same property in one official Data API batch request.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Numeric GA4 property ID or properties/{id}."
+          },
+          "reports": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dateRanges": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "startDate": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "YYYY-MM-DD or a GA4 relative date such as 28daysAgo."
+                      },
+                      "endDate": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "YYYY-MM-DD or a GA4 relative date such as today."
+                      }
+                    },
+                    "required": [
+                      "startDate",
+                      "endDate"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 4
+                },
+                "dimensions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "maxItems": 9,
+                  "default": []
+                },
+                "metrics": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "maxItems": 10
+                },
+                "dimensionFilter": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "description": "Native GA4 FilterExpression JSON."
+                },
+                "metricFilter": {
+                  "$ref": "#/properties/reports/items/properties/dimensionFilter",
+                  "description": "Native GA4 FilterExpression JSON."
+                },
+                "orderBys": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": {},
+                    "description": "Native GA4 OrderBy JSON."
+                  },
+                  "maxItems": 10
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 250000
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "keepEmptyRows": {
+                  "type": "boolean"
+                },
+                "metricAggregations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "TOTAL",
+                      "MINIMUM",
+                      "MAXIMUM",
+                      "COUNT"
+                    ]
+                  },
+                  "maxItems": 4
+                },
+                "currencyCode": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 3
+                },
+                "returnPropertyQuota": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "cohortSpec": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "description": "Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."
+                },
+                "comparisons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "maxItems": 4,
+                  "description": "Native GA4 Comparison objects."
+                }
+              },
+              "required": [
+                "metrics"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "description": "Native GA4 report request objects to execute in one batch."
+          }
+        },
+        "required": [
+          "propertyId",
+          "reports"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_batch_run_pivot_reports",
+      "title": "ga4 batch run pivot reports",
+      "description": "Run 1-5 independent read-only GA4 pivot reports for the same property in one official Data API batch request.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Numeric GA4 property ID or properties/{id}."
+          },
+          "reports": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dateRanges": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "startDate": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "YYYY-MM-DD or a GA4 relative date such as 28daysAgo."
+                      },
+                      "endDate": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "YYYY-MM-DD or a GA4 relative date such as today."
+                      }
+                    },
+                    "required": [
+                      "startDate",
+                      "endDate"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 4
+                },
+                "dimensions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "maxItems": 9
+                },
+                "metrics": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "maxItems": 10
+                },
+                "pivots": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "fieldNames": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 1,
+                        "maxItems": 9
+                      },
+                      "orderBys": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": {},
+                          "description": "Native GA4 OrderBy JSON."
+                        },
+                        "maxItems": 10
+                      },
+                      "offset": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "limit": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 250000
+                      },
+                      "metricAggregations": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "TOTAL",
+                            "MINIMUM",
+                            "MAXIMUM",
+                            "COUNT"
+                          ]
+                        },
+                        "maxItems": 4
+                      }
+                    },
+                    "required": [
+                      "fieldNames",
+                      "limit"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 9
+                },
+                "dimensionFilter": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "description": "Native GA4 FilterExpression JSON."
+                },
+                "metricFilter": {
+                  "$ref": "#/properties/reports/items/properties/dimensionFilter",
+                  "description": "Native GA4 FilterExpression JSON."
+                },
+                "currencyCode": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 3
+                },
+                "keepEmptyRows": {
+                  "type": "boolean"
+                },
+                "returnPropertyQuota": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "cohortSpec": {
+                  "type": "object",
+                  "additionalProperties": {},
+                  "description": "Native GA4 CohortSpec JSON. Omit dateRanges for cohort requests."
+                },
+                "comparisons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "maxItems": 4,
+                  "description": "Native GA4 Comparison objects."
+                }
+              },
+              "required": [
+                "dimensions",
+                "metrics",
+                "pivots"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 5,
+            "description": "Native GA4 report request objects to execute in one batch."
+          }
+        },
+        "required": [
+          "propertyId",
+          "reports"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_check_compatibility",
+      "title": "ga4 check compatibility",
+      "description": "Ask the official GA4 Data API which dimensions and metrics are compatible with a proposed Core report selection.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Numeric GA4 property ID or properties/{id}."
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maxItems": 9,
+            "default": [],
+            "description": "Native reporting dimensions. Validate compatibility with the selected metrics."
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "maxItems": 10,
+            "default": [],
+            "description": "Native or documented calculated metric names to request. Check compatibility with the selected dimensions."
+          },
+          "dimensionFilter": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "Native GA4 FilterExpression JSON."
+          },
+          "metricFilter": {
+            "$ref": "#/properties/dimensionFilter",
+            "description": "Native GA4 FilterExpression JSON."
+          },
+          "compatibilityFilter": {
+            "type": "string",
+            "enum": [
+              "COMPATIBILITY_UNSPECIFIED",
+              "COMPATIBLE",
+              "INCOMPATIBLE"
+            ],
+            "description": "Limit compatibility results to the requested GA4 compatibility category."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_property_quotas_snapshot",
+      "title": "ga4 get property quotas snapshot",
+      "description": "Read the current GA4 Data API property quota snapshot from the official v1alpha endpoint. This does not run a report, but Google still charges one property-quota token to the category with the most remaining quota.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Numeric GA4 property ID or properties/{id}."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_list_accounts",
+      "title": "ga4 list accounts",
+      "description": "List raw GA4 Analytics Admin accounts accessible to the authenticated user (read-only, auto-paginated).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 200,
+            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_list_admin_resources",
+      "title": "ga4 list admin resources",
+      "description": "List an allowlisted GA4 Admin collection in read-only mode: streams, custom definitions, key events, audiences, product links, annotations, channel groups, expanded datasets, subproperty/rollup configuration, and access bindings.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Numeric GA4 property ID or properties/{id}."
+          },
+          "collection": {
+            "type": "string",
+            "enum": [
+              "accessBindings",
+              "adSenseLinks",
+              "audiences",
+              "bigQueryLinks",
+              "calculatedMetrics",
+              "channelGroups",
+              "customDimensions",
+              "customMetrics",
+              "dataStreams",
+              "displayVideo360AdvertiserLinkProposals",
+              "displayVideo360AdvertiserLinks",
+              "expandedDataSets",
+              "firebaseLinks",
+              "googleAdsLinks",
+              "keyEvents",
+              "reportingDataAnnotations",
+              "rollupPropertySourceLinks",
+              "searchAds360Links",
+              "subpropertyEventFilters",
+              "subpropertySyncConfigs"
+            ],
+            "description": "Allowlisted administrative resource collection to read."
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 200,
+            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results."
+          },
+          "includePersonalIdentifiers": {
+            "type": "boolean",
+            "default": false,
+            "description": "Access bindings only. Explicitly include user/email identifiers; false redacts them by default."
+          }
+        },
+        "required": [
+          "propertyId",
+          "collection"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_get_property_configuration",
+      "title": "ga4 get property configuration",
+      "description": "Read GA4 property details plus selected singleton Admin settings (attribution, retention, Google Signals, reporting identity, or user-provided-data settings).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Numeric GA4 property ID or properties/{id}."
+          },
+          "settings": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "attributionSettings",
+                "dataRetentionSettings",
+                "googleSignalsSettings",
+                "reportingIdentitySettings",
+                "userProvidedDataSettings"
+              ]
+            },
+            "maxItems": 5,
+            "default": [],
+            "description": "Property configuration surfaces to inspect."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_list_audience_exports",
+      "title": "ga4 list audience exports",
+      "description": "List existing GA4 Audience Export snapshots and Recurring Audience Lists without creating new exports.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Numeric GA4 property ID or properties/{id}."
+          },
+          "includeRecurring": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include recurring audience-export configurations."
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 100,
+            "description": "Maximum items requested per page. Follow the returned pagination information for remaining results."
+          }
+        },
+        "required": [
+          "propertyId"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "ga4_query_audience_export",
+      "title": "ga4 query audience export",
+      "description": "Query rows from an existing GA4 Audience Export. User/device identifiers are redacted by default; include them only through explicit opt-in.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "audienceExportName": {
+            "type": "string",
+            "pattern": "^properties\\/[^/]+\\/audienceExports\\/[^/]+$",
+            "description": "Full GA4 audience-export resource name returned by list_audience_exports."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Zero-based number of rows to skip before returning results."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 100,
+            "description": "Maximum number of returned items or rows. The declared bounds and default apply; use pagination for additional results."
+          },
+          "includePersonalIdentifiers": {
+            "type": "boolean",
+            "default": false,
+            "description": "Explicitly return user/device identifiers. False redacts identifier columns by default."
+          }
+        },
+        "required": [
+          "audienceExportName"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {}
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Original tool result: parsed JSON when the text is JSON, otherwise the text or multiple MCP content blocks. Provider fields depend on the selected query. Existing MCP Apps fields are returned alongside result."
+          }
+        },
+        "required": [
+          "result"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "name": "ga4-metrics",
+      "uri": "ga4://metrics"
+    },
+    {
+      "name": "ga4-dimensions",
+      "uri": "ga4://dimensions"
+    },
+    {
+      "name": "ga4-compatibility",
+      "uri": "ga4://compatibility"
+    },
+    {
+      "name": "ga4-manifest",
+      "uri": "ga4://manifest"
+    },
+    {
+      "name": "ga4-recipes",
+      "uri": "ga4://recipes"
+    },
+    {
+      "name": "ga4-p2-diagnostics",
+      "uri": "ga4://p2-diagnostics"
+    }
+  ],
+  "prompts": []
+}

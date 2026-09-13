@@ -334,3 +334,45 @@ Please read [SECURITY.md](SECURITY.md) before reporting anything security-relate
 Google, Google Analytics and GA4 are trademarks of Google LLC.
 **This project is not affiliated with, endorsed by, or sponsored by Google LLC.**
 It is an independent client of a public API.
+
+## Version 1.1: platform updates and MCP contracts
+
+Every tool now declares read/write annotations, parameter descriptions and a structured output schema. Successful calls retain their original text and expose the same payload as `structuredContent.result`; provider fields depend on the selected report. Errors retain `isError: true`. The generated [server card](server-card.json) contains definitions only, with no account credentials.
+
+Additional tools included in this release:
+
+| Tool | Purpose |
+| --- | --- |
+| `ga4_health_check` | Read-only GA4 health check. |
+| `ga4_list_properties` | List all GA4 properties accessible with the current credentials. |
+| `ga4_run_report` | Run a GA4 analytics report with intelligent query planning. |
+| `ga4_run_realtime_report` | Run a read-only GA4 Data API realtime report. |
+| `ga4_get_metadata` | Get the complete list of dimensions and metrics available for a specific GA4 property. |
+| `ga4_get_custom_definitions` | List custom dimensions and custom metrics exposed by GA4 Data API metadata. |
+| `ga4_get_key_events` | Inventory GA4 key events/conversions using metadata-aware Data API reports. |
+| `ga4_get_ecommerce_diagnostics` | Read-only ecommerce coverage diagnostics for core ecommerce events, revenue metrics, and item-level reporting over a date range.. |
+| `ga4_get_event_parameters` | Best-effort event parameter inventory from GA4 metadata plus event reports. |
+| `ga4_run_funnel_recipe` | Run a read-only configurable funnel recipe using one GA4 report per eventName/pagePath step and return simple step counts.. |
+| `ga4_get_audience_export_diagnostics` | Read-only Audience Export diagnostics. |
+| `ga4_get_audience_diagnostics` | Read-only audience diagnostics from Admin API audiences, Data API recurring audience lists, and observed audienceName report fallback.. |
+| `ga4_get_bigquery_export_diagnostics` | Detect GA4 BigQuery export links and diagnose export modes, stream coverage, excluded events, and dataset location.. |
+| `ga4_get_server_side_tagging_diagnostics` | Best-effort read-only server-side tagging diagnostics from data streams, Measurement Protocol secrets, event rules, and stream settings.. |
+| `ga4_run_advanced_funnel_report` | Run the GA4 Data API v1alpha runFunnelReport endpoint with optional breakdown/next-action, falling back to read-only step counts if unavailable.. |
+| `ga4_get_channel_groups` | List custom channel groups defined for a GA4 property.. |
+| `ga4_validate_query` | Validate a metric/dimension combination BEFORE executing. |
+| `ga4_run_pivot_report` | Run a read-only GA4 Data API pivot report with native filters, ordering, quota state, multiple date ranges, and up to 250,000 pivot cells. |
+| `ga4_batch_run_reports` | Run 1-5 independent read-only GA4 Core reports for the same property in one official Data API batch request.. |
+| `ga4_batch_run_pivot_reports` | Run 1-5 independent read-only GA4 pivot reports for the same property in one official Data API batch request.. |
+| `ga4_check_compatibility` | Ask the official GA4 Data API which dimensions and metrics are compatible with a proposed Core report selection.. |
+| `ga4_get_property_quotas_snapshot` | Read the current GA4 Data API property quota snapshot from the official v1alpha endpoint. |
+| `ga4_list_accounts` | List raw GA4 Analytics Admin accounts accessible to the authenticated user (read-only, auto-paginated).. |
+| `ga4_list_admin_resources` | List an allowlisted GA4 Admin collection in read-only mode: streams, custom definitions, key events, audiences, product links, annotations, channel groups, expanded datasets, subproperty/rollup configuration, and access bindings.. |
+| `ga4_get_property_configuration` | Read GA4 property details plus selected singleton Admin settings (attribution, retention, Google Signals, reporting identity, or user-provided-data settings).. |
+| `ga4_list_audience_exports` | List existing GA4 Audience Export snapshots and Recurring Audience Lists without creating new exports.. |
+| `ga4_query_audience_export` | Query rows from an existing GA4 Audience Export. |
+
+The hosted GetMCPAds service additionally provides OAuth account selection and interactive review workspaces. Local servers use your own platform credentials and return native report data and media references.
+
+### Desktop bundle
+
+Run `npm run bundle -- /path/to/output` to build a `.mcpb` desktop bundle from the current catalogue. The bundle contains production dependencies, documented local configuration, and complete tool definitions. Provider credentials are entered locally during installation; write tools remain disabled unless explicitly enabled.

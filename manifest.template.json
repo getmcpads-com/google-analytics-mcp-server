@@ -1,0 +1,78 @@
+{
+  "manifest_version": "0.3",
+  "name": "google-analytics-mcp-server",
+  "display_name": "Google Analytics 4 by Get MCP Ads",
+  "version": "1.1.0",
+  "description": "Google Analytics 4 MCP server: 27 read tools.",
+  "author": {
+    "name": "GetMCPAds",
+    "url": "https://www.getmcpads.com"
+  },
+  "homepage": "https://www.getmcpads.com/tools/ga4",
+  "documentation": "https://github.com/getmcpads-com/google-analytics-mcp-server#readme",
+  "support": "https://github.com/getmcpads-com/google-analytics-mcp-server/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getmcpads-com/google-analytics-mcp-server"
+  },
+  "icon": "icon.png",
+  "license": "Apache-2.0",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/cli.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/cli.js"
+      ],
+      "env": {
+        "GA4_CLIENT_ID": "${user_config.ga4_client_id}",
+        "GA4_CLIENT_SECRET": "${user_config.ga4_client_secret}",
+        "GA4_REFRESH_TOKEN": "${user_config.ga4_refresh_token}",
+        "GA4_PROPERTY_ID": "${user_config.ga4_property_id}"
+      }
+    }
+  },
+  "user_config": {
+    "ga4_client_id": {
+      "type": "string",
+      "title": "Ga4 Client Id",
+      "description": "OAuth client ID.",
+      "required": true,
+      "sensitive": false
+    },
+    "ga4_client_secret": {
+      "type": "string",
+      "title": "Ga4 Client Secret",
+      "description": "OAuth client secret.",
+      "required": true,
+      "sensitive": true
+    },
+    "ga4_refresh_token": {
+      "type": "string",
+      "title": "Ga4 Refresh Token",
+      "description": "OAuth refresh token, analytics.readonly scope.",
+      "required": true,
+      "sensitive": true
+    },
+    "ga4_property_id": {
+      "type": "string",
+      "title": "Ga4 Property Id",
+      "description": "Default GA4 property ID.",
+      "required": false,
+      "sensitive": false,
+      "default": ""
+    }
+  },
+  "tools_generated": true,
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=18"
+    }
+  }
+}
