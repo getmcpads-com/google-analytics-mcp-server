@@ -17,10 +17,11 @@ npx -y @getmcpads/google-analytics-mcp-server
 
 Also listed in the [MCP Registry](https://registry.modelcontextprotocol.io) as **`com.getmcpads/google-analytics`**, so clients that read the registry can install it by name.
 
-> **Prefer not to run it yourself?** [getmcpads.com](https://www.getmcpads.com) is the hosted
-> version of this server, with Google Analytics alongside Meta Ads, Google Ads, TikTok Ads,
-> Pinterest Ads and Search Console behind a single endpoint, hosted OAuth, and cross-platform
-> reporting. Same tools, same safety model, no setup.
+> **Prefer a hosted connection?** [Get MCP Ads for GA4](https://www.getmcpads.com/tools/ga4?utm_source=github&utm_medium=readme&utm_campaign=ga4_hosted)
+> handles the server and OAuth flow. Create a workspace, connect the platform and
+> select the accounts or properties your assistant may read. Free is read only;
+> paid limits and supported writes are described on the site. Hosted and npm
+> releases can differ: check the current catalogue for the operation you need.
 
 ---
 
@@ -55,7 +56,7 @@ runs locally, is read-only, and has a large community. Be clear about what diffe
 
 | | **This server** | Google's official server | [getmcpads.com](https://www.getmcpads.com) |
 |---|---|---|---|
-| Tools | **27** | 7 | 27, plus 5 other platforms |
+| Tools | **27** | 7 | [Current hosted catalogue](https://www.getmcpads.com/tools/ga4) |
 | Hosting | **Local**, via npx | Local, via pipx | Hosted for you |
 | Read-only | **Yes** | Yes | Yes |
 | Reports | Their three, plus **pivots, batch reports, advanced funnels** | `run_report`, `run_funnel_report`, realtime | Same |
@@ -304,14 +305,20 @@ Full policy, including how personal data is handled: [SECURITY.md](SECURITY.md).
 
 ## Looking for a managed, multi-platform version?
 
-This server does one platform, on your machine, with your credentials. That is on purpose.
+[Try hosted GA4](https://www.getmcpads.com/tools/ga4?utm_source=github&utm_medium=readme&utm_campaign=ga4_hosted) if you want to use this source without operating a local server.
+Get MCP Ads also connects advertising, Search Console and GA4 through one MCP URL.
+Source availability and plan limits are listed on the site; connecting an account is still required.
 
-If you'd rather not run it yourself, or you need Google Analytics **alongside Meta Ads, Google
-Ads, TikTok Ads, Pinterest Ads and Search Console** behind one endpoint, with hosted OAuth and
-cross-platform reporting, that's what we build at **[getmcpads.com](https://www.getmcpads.com)**.
+1. Follow the [GA4 connection guide](https://www.getmcpads.com/guides/sources/ga4).
+2. Select the account or property your assistant may read.
+3. Connect [Claude](https://www.getmcpads.com/guides/setup/claude),
+   [ChatGPT](https://www.getmcpads.com/guides/setup/chatgpt) or
+   [Codex](https://www.getmcpads.com/guides/setup/codex).
+4. Try a read-only review: “Compare acquisition channels, landing pages and configured key events. State missing data and do not change anything.”
 
-Same philosophy, less plumbing. This project stays open source and independently useful
-either way.
+See the [current hosted tool catalogue](https://www.getmcpads.com/tools/ga4)
+and [pricing](https://www.getmcpads.com/pricing) before choosing a paid plan.
+This Apache 2.0 adapter remains independently useful with your own credentials.
 
 ---
 
